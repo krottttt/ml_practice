@@ -22,7 +22,8 @@ def multiplicative_attention(decoder_hidden_state, encoder_hidden_states, W_mult
     return: np.array of shape (n_features_enc, 1)
         Final attention vector
     """
-    attention_vector = decoder_hidden_state.T@W_mult@encoder_hidden_states
+    mult_vector = softmax(decoder_hidden_state.T@W_mult@encoder_hidden_states)
+    attention_vector = mult_vector@encoder_hidden_states_complex.T
     return attention_vector
 
 def additive_attention(
@@ -38,5 +39,6 @@ def additive_attention(
     return: np.array of shape (n_features_enc, 1)
         Final attention vector
     """
-    attention_vector = v_add.T@np.tanh(W_add_enc@encoder_hidden_states_complex + W_add_dec@decoder_hidden_state)
+    add_vector = softmax(v_add.T@np.tanh(W_add_enc@encoder_hidden_states_complex + W_add_dec@decoder_hidden_state))
+    attention_vector = add_vector@encoder_hidden_states_complex.T
     return attention_vector
